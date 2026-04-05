@@ -10,7 +10,7 @@ async function getAllSkins(req, res) {
     }
 }
 async function getUserSkins(req, res) {
-    const userId = req.session.userId; // Assuming you have user authentication and session management in place
+ 
     try {
         const userSkins = await db.getUserSkins(userId);
         res.render("index", { skins: userSkins });
@@ -32,9 +32,9 @@ async function openCase(req, res) {
 
 
 async function giftSkin(req, res) {
-    const { recipientId, skinId } = req.body;
+    const { recipientId, senderId, skinId, quantity } = req.body;
     try {
-        await db.giftSkin(recipientId, skinId);
+        await db.giftSkin(recipientId, senderId, skinId, quantity);
         res.redirect("/inventory");
     } catch (err) {
         console.error("Error gifting skin:", err);

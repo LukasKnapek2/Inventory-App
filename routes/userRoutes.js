@@ -1,6 +1,6 @@
 const Router = require("express")
 const router = Router();
-const controller = require("../controllers/userController");
+const controller = require("../controllers/controller");
 
 router.get("/", controller.getUserSkins);
 router.post("/cases", controller.openCase);
