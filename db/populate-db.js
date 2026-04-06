@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS inventories (
 );
 
 INSERT INTO skins (name, price, weapon_type, rarity, image_url) VALUES
-('Dragon Lore', 1500.00, 'AWP', 'Covert', 'https://example.com/dragon_lore.jpg'),
-('Howl', 1200.00, 'M4A4', 'Covert', 'https://example.com/howl.jpg'),
-('Medusa', 1000.00, 'AWP', 'Covert', 'https://example.com/medusa.jpg');
+('Dragon Lore', 1500.00, 'AWP', 'epic', 'https://example.com/dragon_lore.jpg'),
+('Howl', 1200.00, 'M4A4', 'common', 'https://example.com/howl.jpg'),
+('Medusa', 1000.00, 'AWP', 'rare', 'https://example.com/medusa.jpg');
 
 INSERT INTO users (username) VALUES
 ('alice'),

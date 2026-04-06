@@ -1,17 +1,35 @@
 const pool = require("./pool");
+const { buildFilters } = require("./filter");
 
-async function getAllSkins() {
-  const result = await pool.query("SELECT * FROM skins");
+async function getFilteredSkins(filters) {
+  const { whereClause, orderClause, values } = buildFilters(filters);
+
+  const query = `
+    SELECT * FROM skins
+    ${whereClause}
+    ${orderClause}
+  `;
+
+  const result = await pool.query(query, values);
   return result.rows;
 }
 
-async function getUserSkins(userId) {
-  const result = await pool.query(
-    `SELECT skins.* FROM skins
-         JOIN inventories ON skins.id = inventories.skin_id
-         WHERE inventories.user_id = $1`,
-    [userId],
-  );
+async function getUserSkins(userId, filters) {
+  const { whereClause, orderClause, values } = buildFilters(filters);
+
+  // userId must be FIRST value
+  values.unshift(userId);
+
+  const query = `
+    SELECT skins.*
+    FROM skins
+    JOIN inventories ON skins.id = inventories.skin_id
+    WHERE inventories.user_id = $1
+    ${whereClause ? "AND " + whereClause.replace("WHERE ", "") : ""}
+    ${orderClause}
+  `;
+
+  const result = await pool.query(query, values);
   return result.rows;
 }
 
@@ -53,7 +71,7 @@ async function deleteSkin(skinId) {
 }
 
 module.exports = {
-  getAllSkins,
+  getFilteredSkins,
   getUserSkins,
   openCase,
   giftSkin,

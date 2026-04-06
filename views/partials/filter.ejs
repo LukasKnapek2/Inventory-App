@@ -1,15 +1,26 @@
-<form method="GET" action="/skins">
+<form method="GET">
+  <input name="search" placeholder="Search..." value="<%= query.search || '' %>" />
+
   <select name="rarity">
     <option value="">All</option>
-    <option value="common">Common</option>
-    <option value="rare">Rare</option>
-    <option value="legendary">Legendary</option>
+    <option value="common" <%= query.rarity === 'common' ? 'selected' : '' %>>Common</option>
+    <option value="rare" <%= query.rarity === 'rare' ? 'selected' : '' %>>Rare</option>
+    <option value="epic" <%= query.rarity === 'epic' ? 'selected' : '' %>>Epic</option>
   </select>
 
   <select name="weapon_type">
     <option value="">All</option>
-    <option value="AK-47">AK-47</option>
-    <option value="AWP">AWP</option>
+    <option value="AWP" <%= query.weapon_type === 'AWP' ? 'selected' : '' %>>AWP</option>
+    <option value="M4A4" <%= query.weapon_type === 'M4A4' ? 'selected' : '' %>>M4A4</option>
+    <option value="AK-47" <%= query.weapon_type === 'AK-47' ? 'selected' : '' %>>AK-47</option>
+    <option value="Knife" <%= query.weapon_type === 'Knife' ? 'selected' : '' %>>Knife</option>
+  </select>
+
+
+  <select name="sort">
+    <option value="">Default</option>
+    <option value="price_asc" <%= query.sort === 'price_asc' ? 'selected' : '' %>>Price ↑</option>
+    <option value="price_desc" <%= query.sort === 'price_desc' ? 'selected' : '' %>>Price ↓</option>
   </select>
 
   <button type="submit">Filter</button>
