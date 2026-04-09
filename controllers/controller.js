@@ -1,21 +1,27 @@
 const db = require("../db/queries");
+const { get } = require("../routes/userRoutes");
 
 async function getFilteredSkins(req, res) {
-  try {
-    const filters = {
-      rarity: req.query.rarity,
-      weapon_type: req.query.weapon_type,
-      search: req.query.search,
-      sort: req.query.sort,
-    };
+  const filters = {
+    rarity: req.query.rarity,
+    weapon_type: req.query.weapon_type,
+    search: req.query.search,
+    sort: req.query.sort,
+    page: req.query.page
+  };
 
-    const skins = await db.getFilteredSkins(filters);
+  const skins = await db.getFilteredSkins(filters);
+  const total = await db.getTotalSkins(filters);
 
-    res.render("skins", { skins });
-  } catch (err) {
-    console.error("Error fetching skins:", err);
-    res.status(500).send("Internal Server Error");
-  }
+  const limit = 10;
+  const totalPages = Math.ceil(total / limit);
+
+  res.render("skins", {
+    skins,
+    query: req.query,
+    currentPage: parseInt(req.query.page) || 1,
+    totalPages
+  });
 }
 async function getUserSkins(req, res) {
   try {
@@ -33,17 +39,33 @@ async function getUserSkins(req, res) {
   }
 }
 
-async function openCase(req, res) {
+async function getCasePage(req, res) {
   try {
-    const newSkin = await db.openCase();
-    res.render("cases", { skin: newSkin });
+    let newSkin = null;
+    if (req.query.skinId) {
+      const result = await db.getSkinById(req.query.skinId);
+    newSkin = result.rows[0];
+    }
+    
+    res.render("case", { skin: newSkin });
   } catch (err) {
     console.error("Error opening case:", err);
     res.status(500).send("Internal Server Error");
   }
 }
 
-async function giftSkin(req, res) {
+async function openCase(req, res) {
+  const { userId } = req.body;
+  try {
+    const newSkin = await db.openCase(userId);
+    res.redirect(`/case?skinId=${newSkin.id}`);
+  } catch (err) {
+    console.error("Error opening case:", err);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+  async function giftSkin(req, res) {
   const { recipientId, senderId, skinId, quantity } = req.body;
   try {
     await db.giftSkin(recipientId, senderId, skinId, quantity);
@@ -68,6 +90,7 @@ async function deleteSkin(req, res) {
 module.exports = {
   getFilteredSkins,
   getUserSkins,
+  getCasePage,
   openCase,
   giftSkin,
   deleteSkin,

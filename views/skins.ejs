@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Skins</title>
+</head>
+<body>
+<h1>All Skins</h1>
+
+<%- include("partials/filter", { query }) %>
+
+<div class="skins">
+  <% skins.forEach(skin => { %>
+    <div class="skin-card">
+      <img src="<%= skin.image_url %>" />
+      <h3><%= skin.name %></h3>
+      <p><%= skin.rarity %></p>
+      <p>Qty: <%= skin.quantity %></p>
+    </div>
+  <% }) %>
+</div>
+
+<%- include("partials/pagination") %>
+
+<a href="/case">🎁 Open Case</a>
+</body>
+</html>

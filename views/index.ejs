@@ -6,9 +6,23 @@
     <title>Home</title>
 </head>
 <body>
-        <h1>Have a look at all your skins</h1>
-        <ul>
-            
-        </ul>
+<h1>Your Inventory</h1>
+
+<%- include("partials/filter", { query }) %>
+
+<div class="skins">
+  <% skins.forEach(skin => { %>
+    <div class="skin-card">
+      <img src="<%= skin.image_url %>" />
+      <h3><%= skin.name %></h3>
+      <p><%= skin.rarity %></p>
+      <p>Qty: <%= skin.quantity %></p>
+    </div>
+  <% }) %>
+</div>
+
+<%- include("partials/pagination") %>
+
+<a href="/case">🎁 Open Case</a>
 </body>
 </html>

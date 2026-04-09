@@ -4,14 +4,35 @@ const { buildFilters } = require("./filter");
 async function getFilteredSkins(filters) {
   const { whereClause, orderClause, values } = buildFilters(filters);
 
+ const page = parseInt(filters.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  values.push(limit);
+  values.push(offset);
+
   const query = `
     SELECT * FROM skins
     ${whereClause}
     ${orderClause}
+    LIMIT $${values.length - 1}
+    OFFSET $${values.length}
   `;
+
 
   const result = await pool.query(query, values);
   return result.rows;
+}
+async function getTotalSkins(filters) {
+  const { whereClause, values } = buildFilters(filters);
+
+  const query = `
+    SELECT COUNT(*) FROM skins
+    ${whereClause}
+  `;
+
+  const result = await pool.query(query, values);
+  return parseInt(result.rows[0].count);
 }
 
 async function getUserSkins(userId, filters) {
@@ -72,6 +93,7 @@ async function deleteSkin(skinId) {
 
 module.exports = {
   getFilteredSkins,
+  getTotalSkins,
   getUserSkins,
   openCase,
   giftSkin,

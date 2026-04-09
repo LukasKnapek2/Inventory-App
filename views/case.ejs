@@ -1,0 +1,14 @@
+<h1>Open a Case</h1>
+
+<form method="POST" action="/case/open">
+  <button type="submit">Open Case 🎁</button>
+</form>
+
+<% if (newSkin) { %>
+  <div class="result">
+    <h2>You got:</h2>
+    <img src="<%= newSkin.image_url %>" />
+    <h3><%= newSkin.name %></h3>
+    <p><%= newSkin.rarity %></p>
+  </div>
+<% } %>
