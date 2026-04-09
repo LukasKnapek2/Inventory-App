@@ -2,6 +2,7 @@ const db = require("../db/queries");
 const { get } = require("../routes/userRoutes");
 
 async function getFilteredSkins(req, res) {
+  try {
   const filters = {
     rarity: req.query.rarity,
     weapon_type: req.query.weapon_type,
@@ -23,6 +24,12 @@ async function getFilteredSkins(req, res) {
     totalPages
   });
 }
+  catch (err) {
+    console.error("Error fetching skins:", err);
+    res.status(500).send("Internal Server Error");
+  } 
+
+}
 async function getUserSkins(req, res) {
   try {
         const filters = {
@@ -30,9 +37,15 @@ async function getUserSkins(req, res) {
       weapon_type: req.query.weapon_type,
       search: req.query.search,
       sort: req.query.sort,
+      page: req.query.page
     };
     const userSkins = await db.getUserSkins(req.query.userId, filters);
-    res.render("index", { skins: userSkins });
+    const total = await db.getTotalSkins(filters);
+
+    const limit = 10;
+    const totalPages = Math.ceil(total / limit);
+
+    res.render("index", { skins: userSkins, query: req.query, currentPage: parseInt(req.query.page) || 1, totalPages });
   } catch (err) {
     console.error("Error fetching user skins:", err);
     res.status(500).send("Internal Server Error");
@@ -44,10 +57,10 @@ async function getCasePage(req, res) {
     let newSkin = null;
     if (req.query.skinId) {
       const result = await db.getSkinById(req.query.skinId);
-    newSkin = result.rows[0];
+      newSkin = result;
     }
     
-    res.render("case", { skin: newSkin });
+    res.render("case", { newSkin });
   } catch (err) {
     console.error("Error opening case:", err);
     res.status(500).send("Internal Server Error");
@@ -55,7 +68,7 @@ async function getCasePage(req, res) {
 }
 
 async function openCase(req, res) {
-  const { userId } = req.body;
+  const userId = 1; // Replace with the actual user ID
   try {
     const newSkin = await db.openCase(userId);
     res.redirect(`/case?skinId=${newSkin.id}`);

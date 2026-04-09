@@ -54,7 +54,7 @@ async function getUserSkins(userId, filters) {
   return result.rows;
 }
 
-async function openCase() {
+async function openCase(userId) {
   const result = await pool.query(
     `SELECT * FROM skins ORDER BY RANDOM() LIMIT 1`,
   );
@@ -69,6 +69,11 @@ async function openCase() {
   );
 
   return newSkin;
+}
+
+async function getSkinById(skinId) {
+  const result = await pool.query(`SELECT * FROM skins WHERE id = $1`, [skinId]);
+  return result.rows[0];
 }
 
 async function giftSkin(recipientId, senderId, skinId, quantity) {
@@ -98,4 +103,5 @@ module.exports = {
   openCase,
   giftSkin,
   deleteSkin,
+  getSkinById
 };
