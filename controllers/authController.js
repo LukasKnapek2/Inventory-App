@@ -1,14 +1,13 @@
 const bcrypt = require("bcrypt");
-const pool = require("./db");
 const authQueries = require("../db/authQueries");
 
 
 function getRegisterPage(req, res) {
-  res.render("register");
+  res.render("auth/register");
 }
 
 function getLoginPage(req, res) {
-  res.render("login");
+  res.render("auth/login");
 }
 
 async function register(req, res) {
@@ -18,7 +17,7 @@ async function register(req, res) {
     const hashedPassword = await bcrypt.hash(password, 10);
     await authQueries.register(username, hashedPassword);
 
-    res.redirect("/login");
+    res.redirect("/auth/login");
   } catch (err) {
     console.error(err);
     res.send("Error registering user");
@@ -30,7 +29,7 @@ async function login(req, res) {
   const user = await authQueries.getUserByUsername(username);
 
   if (!user) {
-    return res.send("User not found");
+    return res.send('User not found. <a href="/auth/register">Register</a>');
   }
   const match = await bcrypt.compare(password, user.password);
 
@@ -48,7 +47,7 @@ async function login(req, res) {
 
 function logout(req, res) {
   req.session.destroy(() => {
-    res.redirect("/login");
+    res.redirect("/auth/login");
   });
 }
 

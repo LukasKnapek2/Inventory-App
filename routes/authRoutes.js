@@ -3,11 +3,12 @@ const router = Router();
 const controller = require("../controllers/authController");
 
 
-app.get("/register", getRegisterPage);
-app.post("/register", register);
+router.get("/register", controller.getRegisterPage);
+router.post("/register", controller.register);
 
-app.get("/login", getLoginPage);
-app.post("/login", login);
+router.get("/login", controller.getLoginPage);
+router.post("/login", controller.login);
 
-app.get("/logout", logout);
+router.get("/logout", controller.logout);
 
+module.exports = router;

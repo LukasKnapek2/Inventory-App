@@ -4,3 +4,5 @@ const controller = require("../controllers/caseController");
 
 router.get("/", controller.getCasePage)
 router.post("/open", controller.openCase);
+
+module.exports = router;
