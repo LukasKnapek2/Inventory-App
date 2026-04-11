@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS skins (
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
-    password Text NOT NULL
+    password TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS inventories (
@@ -35,10 +35,10 @@ INSERT INTO skins (name, price, weapon_type, rarity, image_url) VALUES
 ('Howl', 1200.00, 'M4A4', 'common', 'https://example.com/howl.jpg'),
 ('Medusa', 1000.00, 'AWP', 'rare', 'https://example.com/medusa.jpg');
 
-INSERT INTO users (username) VALUES
-('alice'),
-('bob'),
-('charlie');
+INSERT INTO users (username, password) VALUES
+('alice', ''),
+('bob', ''),
+('charlie', '');
 
 INSERT INTO inventories (user_id, skin_id)
 SELECT users.id, skins.id
@@ -48,7 +48,9 @@ AND skins.name = 'Dragon Lore';
 `;
 
 async function populateDB() {
-  const connectionString = process.argv[2] ||`postgresql://${process.env.POSTGRESQL_USER}:${process.env.POSTGRESQL_PASSWORD}@localhost:5432/${process.env.POSTGRESQL_DB}`;
+  const connectionString =
+    process.argv[2] ||
+    `postgresql://${process.env.POSTGRESQL_USER}:${process.env.POSTGRESQL_PASSWORD}@localhost:5432/${process.env.POSTGRESQL_DB}`;
   const dbClient = new Client({
     connectionString: connectionString,
   });

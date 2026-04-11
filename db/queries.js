@@ -4,7 +4,7 @@ const { buildFilters } = require("./filter");
 async function getFilteredSkins(filters) {
   const { whereClause, orderClause, values } = buildFilters(filters);
 
- const page = parseInt(filters.page) || 1;
+  const page = parseInt(filters.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
 
@@ -19,7 +19,6 @@ async function getFilteredSkins(filters) {
     OFFSET $${values.length}
   `;
 
-
   const result = await pool.query(query, values);
   return result.rows;
 }
@@ -28,7 +27,29 @@ async function getTotalSkins(filters) {
 
   const query = `
     SELECT COUNT(*) FROM skins
-    ${whereClause}
+    ${whereClause ? "WHERE " + whereClause.replace("WHERE ", "") : ""}
+  `;
+
+  const result = await pool.query(query, values);
+  return parseInt(result.rows[0].count);
+}
+
+async function getTotalUserSkins(userId, filters) {
+  const { whereClause, values } = buildFilters(filters);
+
+  values.unshift(userId);
+
+  // Adjust placeholders
+  let adjustedWhereClause = whereClause.replace(
+    /\$(\d+)/g,
+    (match, num) => `$${parseInt(num) + 1}`,
+  );
+
+  const query = `
+    SELECT COUNT(*) FROM skins
+    JOIN inventories ON skins.id = inventories.skin_id
+    WHERE inventories.user_id = $1
+    ${adjustedWhereClause ? "AND " + adjustedWhereClause.replace("WHERE ", "") : ""}
   `;
 
   const result = await pool.query(query, values);
@@ -41,12 +62,18 @@ async function getUserSkins(userId, filters) {
   // userId must be FIRST value
   values.unshift(userId);
 
+  // Adjust placeholders since userId is prepended
+  let adjustedWhereClause = whereClause.replace(
+    /\$(\d+)/g,
+    (match, num) => `$${parseInt(num) + 1}`,
+  );
+
   const query = `
-    SELECT skins.*
+    SELECT skins.*, inventories.quantity
     FROM skins
     JOIN inventories ON skins.id = inventories.skin_id
     WHERE inventories.user_id = $1
-    ${whereClause ? "AND " + whereClause.replace("WHERE ", "") : ""}
+    ${adjustedWhereClause ? "AND " + adjustedWhereClause.replace("WHERE ", "") : ""}
     ${orderClause}
   `;
 
@@ -72,7 +99,9 @@ async function openCase(userId) {
 }
 
 async function getSkinById(skinId) {
-  const result = await pool.query(`SELECT * FROM skins WHERE id = $1`, [skinId]);
+  const result = await pool.query(`SELECT * FROM skins WHERE id = $1`, [
+    skinId,
+  ]);
   return result.rows[0];
 }
 
@@ -100,8 +129,9 @@ module.exports = {
   getFilteredSkins,
   getTotalSkins,
   getUserSkins,
+  getTotalUserSkins,
   openCase,
   giftSkin,
   deleteSkin,
-  getSkinById
+  getSkinById,
 };
