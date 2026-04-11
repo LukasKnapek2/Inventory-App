@@ -68,7 +68,7 @@ async function getCasePage(req, res) {
 }
 
 async function openCase(req, res) {
-  const userId = 1; // Replace with the actual user ID
+  const userId = req.session.user.id;
   try {
     const newSkin = await db.openCase(userId);
     res.redirect(`/case?skinId=${newSkin.id}`);
