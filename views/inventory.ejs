@@ -18,9 +18,59 @@
       <h3><%= skin.name %></h3>
       <p><%= skin.rarity %></p>
       <p>Qty: <%= skin.quantity %></p>
+      <p><button class="gift-button" data-skin-id="<%= skin.id %>">Gift Skin</button></p>
     </div>
   <% }) %>
 </div>
+
+<div id="gift-modal" style="display:none;">
+  <h2>Gift Skin</h2>
+  <form id="gift-form">
+    <input type="hidden" name="skin_id" id="gift-skin-id" />
+    <label for="recipient-name">Recipient Username:</label>
+    <input type="text" name="recipient" id="recipient" required />
+    <label for="quantity">Quantity:</label>
+    <input type="number" name="quantity" id="quantity" value="1" required />
+    <button id="confirm-gift" type="submit">Send Gift</button>
+    <button type="button" id="cancel-gift">Cancel</button>
+  </form>
+</div>
+<script>
+  document.querySelectorAll('.gift-button').forEach(button => {
+    button.addEventListener('click', () => {
+      const skinId = button.getAttribute('data-skin-id');
+      document.getElementById('gift-skin-id').value = skinId;
+      document.getElementById('gift-modal').style.display = 'block';
+    });
+  });
+
+  document.getElementById('cancel-gift').addEventListener('click', () => {
+    document.getElementById('gift-modal').style.display = 'none';
+  });
+
+  document.getElementById('gift-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const recipientName = document.getElementById('recipient').value;
+
+    const response = await fetch('/inventory/gift', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        skinId: document.getElementById('gift-skin-id').value,
+        recipient: recipientName,
+        quantity: document.getElementById('quantity').value
+      })
+    });
+
+    if (response.ok) {
+      alert("Gift successful!");
+      location.reload();
+    } else {
+      const error = await response.text();
+      alert(error);
+    }
+  });
+  </script>
 
 <%- include("partials/pagination") %>
 

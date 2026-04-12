@@ -14,19 +14,20 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "defaultsecret",
-  resave: false,
-  saveUninitialized: false,
-})
-)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "defaultsecret",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 
 app.use("/", allSkinsRouter);
 app.use("/auth", authRoutes);
 app.use("/inventory", requireAuth, inventoryRoutes);
-app.use("/case",requireAuth, caseRoutes);
-
+app.use("/case", requireAuth, caseRoutes);
 
 app.listen(port, (error) => {
   if (error) {

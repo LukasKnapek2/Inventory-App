@@ -48,7 +48,7 @@ async function getTotalUserSkins(userId, filters) {
   const query = `
     SELECT COUNT(*) FROM skins
     JOIN inventories ON skins.id = inventories.skin_id
-    WHERE inventories.user_id = $1
+    WHERE inventories.user_id = $1 AND inventories.quantity > 0
     ${adjustedWhereClause ? "AND " + adjustedWhereClause.replace("WHERE ", "") : ""}
   `;
 
@@ -72,7 +72,7 @@ async function getUserSkins(userId, filters) {
     SELECT skins.*, inventories.quantity
     FROM skins
     JOIN inventories ON skins.id = inventories.skin_id
-    WHERE inventories.user_id = $1
+    WHERE inventories.user_id = $1 AND inventories.quantity > 0
     ${adjustedWhereClause ? "AND " + adjustedWhereClause.replace("WHERE ", "") : ""}
     ${orderClause}
   `;
@@ -106,19 +106,44 @@ async function getSkinById(skinId) {
 }
 
 async function giftSkin(recipientId, senderId, skinId, quantity) {
+  // Remove from sender: update if more than gifting, or delete if exactly
   await pool.query(
-    `-- remove from sender
-UPDATE inventories
-SET quantity = quantity - $quantity
-WHERE user_id = $senderId AND skin_id = $skinId
-
--- add to receiver
-INSERT INTO inventories (user_id, skin_id, quantity)
-VALUES ($receiver, $skinId, $quantity)
-ON CONFLICT (user_id, skin_id)
-DO UPDATE SET quantity = inventories.quantity + $quantity;`,
-    [recipientId, senderId, skinId, quantity],
+    `UPDATE inventories
+     SET quantity = quantity - $1
+     WHERE user_id = $2 AND skin_id = $3 AND quantity > $1`,
+    [quantity, senderId, skinId]
   );
+
+  // Delete sender's entry if they gifted exactly their quantity
+  await pool.query(
+    `DELETE FROM inventories
+     WHERE user_id = $1 AND skin_id = $2 AND quantity = $3`,
+    [senderId, skinId, quantity]
+  );
+
+  // Add to receiver
+  await pool.query(
+    `INSERT INTO inventories (user_id, skin_id, quantity)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (user_id, skin_id)
+     DO UPDATE SET quantity = inventories.quantity + $3`,
+    [recipientId, skinId, quantity]
+  );
+}
+
+async function getUserSkinQuantity(userId, skinId) {
+  const result = await pool.query(
+    `SELECT quantity FROM inventories WHERE user_id = $1 AND skin_id = $2`,
+    [userId, skinId],
+  );
+  return result.rows[0]?.quantity || 0;
+}
+
+async function getUserIdByUsername(username) {
+  const result = await pool.query(`SELECT id FROM users WHERE username = $1`, [
+    username,
+  ]);
+  return result.rows[0]?.id;
 }
 
 async function deleteSkin(skinId) {
@@ -134,4 +159,6 @@ module.exports = {
   giftSkin,
   deleteSkin,
   getSkinById,
+  getUserSkinQuantity,
+  getUserIdByUsername,
 };

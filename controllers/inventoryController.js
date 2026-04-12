@@ -27,16 +27,7 @@ async function getUserSkins(req, res) {
   }
 }
 
-async function giftSkin(req, res) {
-  const { recipientId, senderId, skinId, quantity } = req.body;
-  try {
-    await db.giftSkin(recipientId, senderId, skinId, quantity);
-    res.redirect("/inventory");
-  } catch (err) {
-    console.error("Error gifting skin:", err);
-    res.status(500).send("Internal Server Error");
-  }
-}
+
 
 async function deleteSkin(req, res) {
   const { skinId } = req.body;
@@ -51,6 +42,5 @@ async function deleteSkin(req, res) {
 
 module.exports = {
   getUserSkins,
-  giftSkin,
   deleteSkin,
 };
