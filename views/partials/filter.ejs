@@ -1,15 +1,19 @@
 <form method="GET" class="filter-form">
   <div class="filter-search-container">
-  <input name="search" placeholder="Search..." value="<%= query.search || '' %>" />
+  <input class="filter-input-search" name="search" placeholder="Search..." value="<%= query.search || '' %>" />
 </div>
 <div class="filter-options-container">
+  <div class="filter-options-group">
+  <label for="rarity">Rarity:</label>
   <select name="rarity">
     <option value="">All</option>
     <option value="common" <%= query.rarity === 'common' ? 'selected' : '' %>>Common</option>
     <option value="rare" <%= query.rarity === 'rare' ? 'selected' : '' %>>Rare</option>
     <option value="epic" <%= query.rarity === 'epic' ? 'selected' : '' %>>Epic</option>
   </select>
-
+</div>
+<div class="filter-options-group">
+  <label for="weapon_type">Weapon Type:</label>
   <select name="weapon_type">
     <option value="">All</option>
     <option value="AWP" <%= query.weapon_type === 'AWP' ? 'selected' : '' %>>AWP</option>
@@ -17,14 +21,119 @@
     <option value="AK-47" <%= query.weapon_type === 'AK-47' ? 'selected' : '' %>>AK-47</option>
     <option value="Knife" <%= query.weapon_type === 'Knife' ? 'selected' : '' %>>Knife</option>
   </select>
-
-
+</div>
+<div class="filter-options-group">
+  <label for="sort">Sort By:</label>
   <select name="sort">
     <option value="">Default</option>
     <option value="price_asc" <%= query.sort === 'price_asc' ? 'selected' : '' %>>Price ↑</option>
     <option value="price_desc" <%= query.sort === 'price_desc' ? 'selected' : '' %>>Price ↓</option>
   </select>
-
+</div>
   <button type="submit">Filter</button>
   </div>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('.filter-form');
+  const searchInput = form.querySelector('input[name="search"]');
+  const selects = form.querySelectorAll('select');
+
+  // Debounce function for search input
+  let debounceTimer;
+  function debounce(func, delay) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(func, delay);
+  }
+
+  // Function to update results
+  function updateResults(resetPage = false) {
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData);
+    if (resetPage) {
+      params.set('page', '1');
+    }
+
+    fetch(window.location.pathname + '?' + params.toString(), {
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Update skins
+      const skinsContainer = document.querySelector('.skins');
+      skinsContainer.innerHTML = data.skins.map(skin => `
+        <div class="skin-card">
+          <img src="${skin.image_url}" />
+          <h3>${skin.name}</h3>
+          <p>${skin.rarity}</p>
+          <p>Qty: ${skin.quantity}</p>
+        </div>
+      `).join('');
+
+      // Update pagination
+      const paginationContainer = document.querySelector('.pagination');
+      let paginationHTML = '<div class="pagination">';
+
+      // Previous
+      if (data.currentPage > 1) {
+        const prevParams = new URLSearchParams({ ...data.query, page: data.currentPage - 1 });
+        paginationHTML += `<a href="?${prevParams.toString()}">← Previous</a>`;
+      } else {
+        paginationHTML += '<span style="color: gray;">← Previous</span>';
+      }
+
+      // Page numbers
+      for (let i = 1; i <= data.totalPages; i++) {
+        const pageParams = new URLSearchParams({ ...data.query, page: i });
+        const style = data.currentPage === i ? 'font-weight: bold;' : '';
+        paginationHTML += `<a href="?${pageParams.toString()}" style="${style}">${i}</a>`;
+      }
+
+      // Next
+      if (data.currentPage < data.totalPages) {
+        const nextParams = new URLSearchParams({ ...data.query, page: data.currentPage + 1 });
+        paginationHTML += `<a href="?${nextParams.toString()}">Next →</a>`;
+      } else {
+        paginationHTML += '<span style="color: gray;">Next →</span>';
+      }
+
+      paginationHTML += '</div>';
+      paginationContainer.outerHTML = paginationHTML;
+
+      // Update URL without reload
+      const newUrl = window.location.pathname + '?' + params.toString();
+      window.history.pushState({}, '', newUrl);
+    })
+    .catch(error => console.error('Error updating results:', error));
+  }
+
+  // Listen for changes
+  selects.forEach(select => {
+    select.addEventListener('change', () => updateResults(true));
+  });
+
+  searchInput.addEventListener('input', function() {
+    debounce(() => updateResults(true), 300); // 300ms delay
+  });
+
+  // Listen for pagination clicks
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('.pagination a')) {
+      e.preventDefault();
+      const url = new URL(e.target.href);
+      const params = url.searchParams;
+      // Update form inputs to match the params
+      params.forEach((value, key) => {
+        const input = form.querySelector(`[name="${key}"]`);
+        if (input) input.value = value;
+      });
+      updateResults();
+    }
+  });
+  // Initial update
+  updateResults();
+});
+</script>
