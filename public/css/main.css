@@ -1,30 +1,23 @@
-/*light reset*/
-/* 1. Better box model */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* 2. Remove default margin */
 body {
   margin: 0;
 }
 
-/* 3. Improve text rendering */
 body {
   font-family: system-ui, sans-serif;
   line-height: 1.5;
 }
 
-/* 4. Make images behave */
 img {
   max-width: 100%;
   display: block;
 }
 
-
-/*variables*/
 :root {
   --primary-color: #293145;
   --secondary-color: #3f6788b0;
@@ -64,7 +57,7 @@ img {
   padding: 1rem;
   border-radius: 5px;
 }
-.navbar-link:hover{
+.navbar-link:hover {
   background-color: var(--secondary-color);
 }
 .navbar-auth {
@@ -83,7 +76,6 @@ img {
 }
 .navbar-login {
   background-color: #388020ce;
-
 }
 
 body {
@@ -93,7 +85,9 @@ body {
   flex-direction: column;
   align-items: center;
   background-color: #1b2838;
-  font: 16px 'Arial', sans-serif;
+  font:
+    16px "Arial",
+    sans-serif;
   color: var(--text-color);
 }
 
@@ -106,7 +100,6 @@ body {
   background-color: var(--primary-color);
   padding: 20px;
   border: 1px solid var(--border-color);
-
 }
 
 .filter-form {
@@ -114,31 +107,32 @@ body {
   flex-direction: column;
   gap: 10px;
   flex-wrap: wrap;
-  
 }
 
 .filter-options-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 5rem;  
+  gap: 2rem;
+  width: 100%;
 }
 
 .filter-options-group {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 20%;
-  
+  flex: 1;
+  min-width: 150px;
 }
 
 .filter-form label {
   font-size: 2rem;
-  margin: 1rem;
+  margin: 1rem 0 0 1rem;
 }
 
-.filter-form input, .filter-form select, .filter-form button  {
+.filter-form input,
+.filter-form select,
+.filter-form button {
   padding: 8px;
   border-radius: 5px;
   border: 1px solid var(--border-color);
@@ -149,7 +143,22 @@ body {
 }
 
 .filter-input-search {
-  width: 80%;
+  width: 87.5%;
+  margin: 1rem;
+}
+
+.filter-button-group {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  align-self: flex-end;
+}
+
+.filter-button-group label {
+  visibility: hidden;
+}
+.filter-form button {
+  margin: 1rem;
 }
 
 .heading-over-filter {
@@ -165,7 +174,6 @@ body {
   width: 80%;
 }
 
-
 .skin-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -176,7 +184,3 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
-
-
-
