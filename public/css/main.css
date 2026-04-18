@@ -1,0 +1,157 @@
+/*light reset*/
+/* 1. Better box model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+body {
+  margin: 0;
+}
+
+/* 3. Improve text rendering */
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+/* 4. Make images behave */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+
+/*variables*/
+:root {
+  --primary-color: #293145;
+  --secondary-color: #3f6788b0;
+  --text-color: #cfd2d8;
+  --border-radius: 5px;
+  --border-color: #20a2ffe2;
+  --primary-hover-color: #3c6484;
+  --dark-background: #000000;
+}
+
+/*layout*/
+.navbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 8rem;
+  font-size: 3rem;
+}
+.navbar-list {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link {
+  padding: 1rem;
+  border-radius: 5px;
+}
+.navbar-link:hover{
+  background-color: var(--secondary-color);
+}
+.navbar-auth {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-right: 20px;
+}
+.navbar-auth li {
+  margin-left: 20px;
+}
+
+.navbar-login:hover {
+  background-color: #5da047ce;
+}
+.navbar-login {
+  background-color: #388020ce;
+
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin: 20px 0;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  padding: 20px;
+  border: 1px solid var(--border-color);
+
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.filter-form input, .filter-form select, .filter-form button  {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  width: 200px;
+  background-color: var(--secondary-color);
+}
+
+
+.skins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  width: 80%;
+}
+
+
+.skin-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/*components*/
+
+/*colors*/
+
+body {
+  background-color: #1b2838;
+  font: 16px 'Arial', sans-serif;
+  color: var(--text-color);
+}
+.navbar {
+  background-color: var(--dark-background);
+  padding: 10px 0;
+}
+
+.navbar a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
