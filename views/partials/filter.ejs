@@ -1,6 +1,8 @@
-<form method="GET">
+<form method="GET" class="filter-form">
+  <div class="filter-search-container">
   <input name="search" placeholder="Search..." value="<%= query.search || '' %>" />
-
+</div>
+<div class="filter-options-container">
   <select name="rarity">
     <option value="">All</option>
     <option value="common" <%= query.rarity === 'common' ? 'selected' : '' %>>Common</option>
@@ -24,4 +26,5 @@
   </select>
 
   <button type="submit">Filter</button>
+  </div>
 </form>
