@@ -23,6 +23,7 @@ async function getFilteredSkins(req, res) {
         query: req.query,
         currentPage: parseInt(req.query.page) || 1,
         totalPages,
+        pageType: "allSkins"
       });
     } else {
       res.render("skins", {

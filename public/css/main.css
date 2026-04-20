@@ -23,7 +23,8 @@ img {
   --secondary-color: #3f6788b0;
   --text-color: #cfd2d8;
   --border-radius: 5px;
-  --border-color: #20a2ffe2;
+  --border-color: #20a2ff5c;
+  --border-color-hover: #20a2ff;
   --primary-hover-color: #3c6484;
   --dark-background: #000000;
 }
@@ -109,6 +110,18 @@ body {
   flex-wrap: wrap;
 }
 
+.filter-form input:focus,
+.filter-form select:focus {
+  outline: solid 2px var(--primary-hover-color);
+  border-color: var(--border-color-hover);
+  box-shadow: 0 0 8px rgba(32, 162, 255, 0.4);
+}
+
+.filter-form input,
+.filter-form select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .filter-options-container {
   display: flex;
   justify-content: space-between;
@@ -167,20 +180,47 @@ body {
 }
 
 .skins {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
-  justify-content: center;
+  margin: 2rem auto;
   width: 80%;
 }
 
 .skin-card {
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
+
+  height: 100%;
+}
+.skin-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* .skin-card {
+  transition: transform 0.2s ease;
+}
+
+.skin-card:hover {
+  transform: scale(1.05);
+} */
+
+.skin-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+
+.skin-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border-color: var(--border-color-hover);
 }

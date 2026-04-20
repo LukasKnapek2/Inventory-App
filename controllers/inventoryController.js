@@ -15,12 +15,24 @@ async function getUserSkins(req, res) {
     const limit = 10;
     const totalPages = Math.ceil(total / limit);
 
-    res.render("inventory", {
-      skins: userSkins,
-      query: req.query,
-      currentPage: parseInt(req.query.page) || 1,
-      totalPages,
-    });
+    // Check if request accepts JSON (for AJAX requests)
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      res.json({
+        skins: userSkins,
+        query: req.query,
+        currentPage: parseInt(req.query.page) || 1,
+        totalPages,
+        pageType: "inventory"
+      });
+
+   } else {
+      res.render("skins", {
+        skins: userSkins,
+        query: req.query,
+        currentPage: parseInt(req.query.page) || 1,
+        totalPages
+      });
+    }
   } catch (err) {
     console.error("Error fetching user skins:", err);
     res.status(500).send("Internal Server Error");

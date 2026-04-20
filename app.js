@@ -25,11 +25,17 @@ app.use(
     saveUninitialized: false,
   }),
 );
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
 
 app.use("/", allSkinsRouter);
 app.use("/auth", authRoutes);
 app.use("/inventory", requireAuth, inventoryRoutes);
 app.use("/case", requireAuth, caseRoutes);
+
+
 
 app.listen(port, (error) => {
   if (error) {

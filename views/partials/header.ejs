@@ -10,9 +10,17 @@
       <a href="/case" class="navbar-link">Case</a>
     </li>
   </ul>
-  <ul class="navbar-auth">
+<ul class="navbar-auth">
+  <% if (user) { %>
+    <li class="user-name">Hello, <%= user.username %></li>
+
+    <li class="navbar-item">
+      <a href="/auth/logout" class="navbar-link navbar-login">Logout</a>
+    </li>
+  <% } else { %>
     <li class="navbar-item">
       <a href="/auth/login" class="navbar-link navbar-login">Login</a>
     </li>
-  </ul>
+  <% } %>
+</ul>
 </navbar>
