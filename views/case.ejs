@@ -1,16 +1,116 @@
-  <%- include("partials/header") %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Case</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <%- include("partials/header") %>
 
-<h1>Open a Case</h1>
+    <div class="case-container">
+      <h1>Open a Case</h1>
+      <!-- method="POST" action="/case/open" -->
+      <form id="case-form">
+        <button type="submit" id="open-btn">Open Case 🎁</button>
+      </form>
 
-<form method="POST" action="/case/open">
-  <button type="submit">Open Case 🎁</button>
-</form>
+      <!-- 🎰 Rolling animation -->
+      <div class="case-roll hidden" id="case-roll">
+        <div class="roll-track" id="roll-track"></div>
+      </div>
 
-<% if (newSkin) { %>
-  <div class="result">
-    <h2>You got:</h2>
-    <img src="<%= newSkin.image_url %>" />
-    <h3><%= newSkin.name %></h3>
-    <p><%= newSkin.rarity %></p>
-  </div>
-<% } %>
+      <!--   <% if (newSkin) { %>
+    <div class="result rarity-<%= newSkin.rarity %>">
+      <h2>You got:</h2>
+      <img src="<%= newSkin.image_url %>" />
+      <h3><%= newSkin.name %></h3>
+      <p><%= newSkin.rarity %></p>
+    </div>
+  <% } %> -->
+    </div>
+
+    <script>
+      const form = document.getElementById("case-form");
+      const button = document.getElementById("open-btn");
+      const roll = document.getElementById("case-roll");
+      const track = document.getElementById("roll-track");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        button.disabled = true;
+        roll.classList.remove("hidden");
+        track.innerHTML = "";
+
+        // Fetch animation skins and winning skin from backend
+        const res = await fetch("/case/open-ajax", { method: "POST" });
+        if (!res.ok) {
+          alert("Error opening case!");
+          button.disabled = false;
+          return;
+        }
+        const data = await res.json();
+        const { animationSkins, winningSkin } = data;
+
+        // Populate animation track with real skins
+        animationSkins.forEach((skin, i) => {
+          const item = document.createElement("div");
+          item.classList.add("roll-item", `rarity-${skin.rarity}`);
+          item.innerHTML = `
+      <img src="${skin.image_url}" alt="${skin.name}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;" />
+      <div style="font-size:0.9rem;">${skin.name}</div>
+    `;
+          track.appendChild(item);
+        });
+
+        // Animate so that the winning skin lands in the center
+        const itemWidth = 130; // 120px + 10px gap
+        const centerIndex = Math.floor(animationSkins.length / 2);
+        const offset =
+          itemWidth * centerIndex - roll.offsetWidth / 2 + itemWidth / 2;
+        track.style.transition = "none";
+        track.style.transform = "translateX(0)";
+        // Force reflow
+        void track.offsetWidth;
+        setTimeout(() => {
+          track.style.transition =
+            "transform 4s cubic-bezier(0.23, 1, 0.32, 1)";
+          track.style.transform = `translateX(-${offset}px)`;
+        }, 1000);
+
+        // After animation, show result card
+        setTimeout(() => {
+          roll.classList.add("hidden");
+          // Remove old result if present
+          const oldResult = document.querySelector(".result");
+          if (oldResult) oldResult.remove();
+          // Create new result card
+          const resultDiv = document.createElement("div");
+          resultDiv.className = `result rarity-${winningSkin.rarity}`;
+          resultDiv.innerHTML = `
+      <h2>You got:</h2>
+      <img src="${winningSkin.image_url}" />
+      <h3>${winningSkin.name}</h3>
+      <p>${winningSkin.rarity}</p>
+    `;
+          document.querySelector(".case-container").appendChild(resultDiv);
+          setTimeout(() => {
+            resultDiv.classList.add("show");
+          }, 500);
+          button.disabled = false;
+        }, 5500);
+      });
+
+      // 🔥 Show result AFTER page loads
+      window.addEventListener("DOMContentLoaded", () => {
+        const result = document.querySelector(".result");
+        if (result) {
+          setTimeout(() => {
+            result.classList.add("show");
+          }, 300);
+        }
+      });
+    </script>
+  </body>
+</html>

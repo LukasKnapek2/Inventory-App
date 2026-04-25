@@ -7,7 +7,7 @@ async function getCasePage(req, res) {
       const result = await db.getSkinById(req.query.skinId);
       newSkin = result;
     }
-    
+
     res.render("case", { newSkin });
   } catch (err) {
     console.error("Error opening case:", err);
@@ -27,5 +27,30 @@ async function openCase(req, res) {
 }
 module.exports = {
   getCasePage,
-  openCase
+  openCase,
+  async openCaseAjax(req, res) {
+    const userId = req.session.user.id;
+    try {
+      // Get all skins for animation
+      const allSkins = await require("../db/queries").getFilteredSkins({});
+      // Pick 30 random skins for the animation
+      const animationSkins = [];
+      for (let i = 0; i < 30; i++) {
+        const rand = Math.floor(Math.random() * allSkins.length);
+        animationSkins.push(allSkins[rand]);
+      }
+      // Pick the winning skin (simulate opening)
+      const winningSkin = await require("../db/queries").openCase(userId);
+      // Place the winning skin in the center
+      const center = Math.floor(animationSkins.length / 2);
+      animationSkins[center] = winningSkin;
+      res.json({
+        animationSkins,
+        winningSkin,
+      });
+    } catch (err) {
+      console.error("Error in openCaseAjax:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
 };

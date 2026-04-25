@@ -14,7 +14,7 @@ yarn-error.log*
 # Logs
 logs
 *.log
-
+Aufgaben_liste.txt
 # Runtime data
 pids
 *.pid

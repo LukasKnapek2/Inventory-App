@@ -19,7 +19,7 @@
     <div class="skin-card">
       <img src="<%= skin.image_url %>" />
       <h3><%= skin.name %></h3>
-      <p><%= skin.rarity %></p>
+      <p class="rarity-<%= skin.rarity %>"><%= skin.rarity %></p>
       <p>Qty: <%= skin.quantity %></p>
       <p><button class="gift-button" data-skin-id="<%= skin.id %>">Gift Skin</button></p>
     </div>
