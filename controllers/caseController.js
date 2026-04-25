@@ -25,17 +25,16 @@ async function openCase(req, res) {
     res.status(500).send("Internal Server Error");
   }
 }
-module.exports = {
-  getCasePage,
-  openCase,
-  async openCaseAjax(req, res) {
+
+
+ async function openCaseAjax(req, res) {
     const userId = req.session.user.id;
     try {
       // Get all skins for animation
       const allSkins = await require("../db/queries").getFilteredSkins({});
       // Pick 30 random skins for the animation
       const animationSkins = [];
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 50; i++) {
         const rand = Math.floor(Math.random() * allSkins.length);
         animationSkins.push(allSkins[rand]);
       }
@@ -52,5 +51,10 @@ module.exports = {
       console.error("Error in openCaseAjax:", err);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  },
+  }
+
+module.exports = {
+  getCasePage,
+  openCase,
+  openCaseAjax
 };

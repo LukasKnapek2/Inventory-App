@@ -12,7 +12,7 @@ async function getUserSkins(req, res) {
     const userSkins = await db.getUserSkins(req.session.user.id, filters);
     const total = await db.getTotalUserSkins(req.session.user.id, filters);
 
-    const limit = 10;
+    const limit = 14;
     const totalPages = Math.ceil(total / limit);
 
     // Check if request accepts JSON (for AJAX requests)

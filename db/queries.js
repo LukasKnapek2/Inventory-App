@@ -5,7 +5,7 @@ async function getFilteredSkins(filters) {
   const { whereClause, orderClause, values } = buildFilters(filters);
 
   const page = parseInt(filters.page) || 1;
-  const limit = 10;
+  const limit = 12;
   const offset = (page - 1) * limit;
 
   values.push(limit);
@@ -59,6 +59,10 @@ async function getTotalUserSkins(userId, filters) {
 async function getUserSkins(userId, filters) {
   const { whereClause, orderClause, values } = buildFilters(filters);
 
+  const page = parseInt(filters.page) || 1;
+  const limit = 12;
+  const offset = (page - 1) * limit;
+
   // userId must be FIRST value
   values.unshift(userId);
 
@@ -68,6 +72,9 @@ async function getUserSkins(userId, filters) {
     (match, num) => `$${parseInt(num) + 1}`,
   );
 
+  values.push(limit);
+  values.push(offset);
+
   const query = `
     SELECT skins.*, inventories.quantity
     FROM skins
@@ -75,6 +82,8 @@ async function getUserSkins(userId, filters) {
     WHERE inventories.user_id = $1 AND inventories.quantity > 0
     ${adjustedWhereClause ? "AND " + adjustedWhereClause.replace("WHERE ", "") : ""}
     ${orderClause}
+    LIMIT $${values.length - 1}
+    OFFSET $${values.length}
   `;
 
   const result = await pool.query(query, values);

@@ -1,6 +1,7 @@
 <form method="GET" class="filter-form">
   <div class="filter-search-container">
   <input class="filter-input-search" name="search" placeholder="Search..." value="<%= query.search || '' %>" />
+  <input type="hidden" name="page" value="<%= query.page || 1 %>" />
 </div>
 <div class="filter-options-container">
   <div class="filter-options-group">
@@ -80,7 +81,8 @@ document.addEventListener('DOMContentLoaded', function() {
           <img src="${skin.image_url}" />
           <h3>${skin.name}</h3>
           <p>${skin.rarity}</p>
-          <p>Qty: ${skin.quantity}</p>
+          <p>Price: $${skin.price}</p>
+          ${data.pageType === 'inventory' ? `<p>Qty: ${skin.quantity}</p>` : ''}
         </div>
       `).join('');
 
@@ -95,14 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const prevParams = new URLSearchParams({ ...data.query, page: data.currentPage - 1 });
         paginationHTML += `<a href="?${prevParams.toString()}">← Previous</a>`;
       } else {
-        paginationHTML += '<span style="color: gray;">← Previous</span>';
+        paginationHTML += '<span class="disabled">← Previous</span>';
       }
 
       // Page numbers
       for (let i = 1; i <= data.totalPages; i++) {
         const pageParams = new URLSearchParams({ ...data.query, page: i });
-        const style = data.currentPage === i ? 'font-weight: bold;' : '';
-        paginationHTML += `<a href="?${pageParams.toString()}" style="${style}">${i}</a>`;
+        const activeClass = data.currentPage === i ? 'active' : '';
+        paginationHTML += `<a href="?${pageParams.toString()}" class="${activeClass}">${i}</a>`;
       }
 
       // Next
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const nextParams = new URLSearchParams({ ...data.query, page: data.currentPage + 1 });
         paginationHTML += `<a href="?${nextParams.toString()}">Next →</a>`;
       } else {
-        paginationHTML += '<span style="color: gray;">Next →</span>';
+        paginationHTML += '<span class="disabled">Next →</span>';
       }
 
       paginationHTML += '</div>';
@@ -143,6 +145,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const input = form.querySelector(`[name="${key}"]`);
         if (input) input.value = value;
       });
+      // Update the hidden page input
+      const pageInput = form.querySelector('input[name="page"]');
+      if (pageInput) pageInput.value = params.get('page') || 1;
       updateResults();
     }
   });

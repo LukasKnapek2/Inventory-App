@@ -119,7 +119,9 @@ body {
 
 .filter-form input,
 .filter-form select {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .filter-options-container {
@@ -207,19 +209,19 @@ body {
 }
 
 .skin-card > .rarity-common {
-  color : gray;
+  color: gray;
 }
 
 .skin-card > .rarity-rare {
-  color : blue;
+  color: blue;
 }
 
 .skin-card > .rarity-epic {
-  color : purple;
+  color: purple;
 }
 
 .skin-card > .rarity-legendary {
-  color : gold;
+  color: gold;
 }
 
 /* .skin-card {
@@ -231,7 +233,9 @@ body {
 } */
 
 .skin-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   will-change: transform;
 }
 
@@ -240,7 +244,6 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   border-color: var(--border-color-hover);
 }
-
 
 /* 🎰 CASE CONTAINER */
 .case-container {
@@ -259,7 +262,9 @@ body {
   background: linear-gradient(45deg, #20a2ff, #3f6788);
   color: white;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 #open-btn:hover {
@@ -283,7 +288,7 @@ body {
 
 /* Center marker for winning skin */
 .case-roll::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
@@ -378,4 +383,49 @@ body {
 
 .rarity-legendary {
   box-shadow: 0 0 25px gold;
+}
+
+/* 📄 PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  padding: 10px 12px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+}
+
+.pagination a:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--border-color-hover);
+  box-shadow: 0 0 8px rgba(32, 162, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.pagination a.active {
+  background-color: var(--secondary-color);
+  border-color: var(--border-color-hover);
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(32, 162, 255, 0.6);
+}
+
+.pagination span.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  border-color: #555;
 }
