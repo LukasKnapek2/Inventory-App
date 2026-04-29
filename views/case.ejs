@@ -37,11 +37,50 @@
       const roll = document.getElementById("case-roll");
       const track = document.getElementById("roll-track");
 
+      // Create audio elements
+      const caseOpenSound = new Audio("/sounds/Result-sound.mp3");
+      caseOpenSound.volume = 0.7;
+
+      const tickSound = new Audio("/sounds/tick-sound.wav");
+      tickSound.volume = 0.7;
+
+      let checkingPositions = false;
+
+      // Function to check skin positions and play tick sound
+      function checkSkinPositions() {
+        if (!checkingPositions) return;
+
+        const rollItems = document.querySelectorAll(".roll-item");
+        const triggerX = window.innerWidth / 2;
+
+        rollItems.forEach((item) => {
+          const rect = item.getBoundingClientRect();
+          console.log(`Item: ${item.textContent.substring(0, 20)}, left: ${rect.left}, right: ${rect.right}, trigger: ${triggerX}, played: ${item.dataset.played}`);
+
+          // Check if skin is crossing the center marker
+          if (
+            item.dataset.played === "no" &&
+            rect.left < triggerX &&
+            rect.right > triggerX
+          ) {
+            console.log("Playing tick sound!");
+            tickSound.currentTime = 0;
+            tickSound
+              .play()
+              .catch((err) => console.log("Tick sound play failed:", err));
+            item.dataset.played = "yes";
+          }
+        });
+
+        requestAnimationFrame(checkSkinPositions);
+      }
+
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
         button.disabled = true;
         roll.classList.remove("hidden");
         track.innerHTML = "";
+        checkingPositions = false;
 
         // Fetch animation skins and winning skin from backend
         const res = await fetch("/case/open-ajax", { method: "POST" });
@@ -57,6 +96,7 @@
         animationSkins.forEach((skin, i) => {
           const item = document.createElement("div");
           item.classList.add("roll-item", `rarity-${skin.rarity}`);
+          item.dataset.played = "no";
           item.innerHTML = `
       <img src="${skin.image_url}" alt="${skin.name}" style="width:60px;height:60px;object-fit:cover;border-radius:4px;" />
       <div style="font-size:0.9rem;">${skin.name}</div>
@@ -76,10 +116,22 @@
         // Force reflow
         void track.offsetWidth;
         setTimeout(() => {
-          track.style.transition =
-            "transform 4s cubic-bezier(0,.49,.8,1)";
+          track.style.transition = "transform 4s cubic-bezier(0,.49,.8,1)";
+          // Start checking skin positions for tick sounds
+          checkingPositions = true;
+          console.log("Starting animation, checkingPositions set to true");
+          checkSkinPositions();
           track.style.transform = `translateX(-${offset}px)`;
         }, 1000);
+
+        // Play case opening sound when animation ends (at 5s total)
+        setTimeout(() => {
+          caseOpenSound.currentTime = 0;
+          caseOpenSound
+            .play()
+            .catch((err) => console.log("Sound play failed:", err));
+          checkingPositions = false;
+        }, 5050);
 
         // After animation, show result card
         setTimeout(() => {
@@ -104,7 +156,7 @@
         }, 5500);
       });
 
-/*       // 🔥 Show result AFTER page loads
+      /*       // 🔥 Show result AFTER page loads
       window.addEventListener("DOMContentLoaded", () => {
         const result = document.querySelector(".result");
         if (result) {

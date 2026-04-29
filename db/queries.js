@@ -120,14 +120,14 @@ async function giftSkin(recipientId, senderId, skinId, quantity) {
     `UPDATE inventories
      SET quantity = quantity - $1
      WHERE user_id = $2 AND skin_id = $3 AND quantity > $1`,
-    [quantity, senderId, skinId]
+    [quantity, senderId, skinId],
   );
 
   // Delete sender's entry if they gifted exactly their quantity
   await pool.query(
     `DELETE FROM inventories
      WHERE user_id = $1 AND skin_id = $2 AND quantity = $3`,
-    [senderId, skinId, quantity]
+    [senderId, skinId, quantity],
   );
 
   // Add to receiver
@@ -136,7 +136,7 @@ async function giftSkin(recipientId, senderId, skinId, quantity) {
      VALUES ($1, $2, $3)
      ON CONFLICT (user_id, skin_id)
      DO UPDATE SET quantity = inventories.quantity + $3`,
-    [recipientId, skinId, quantity]
+    [recipientId, skinId, quantity],
   );
 }
 

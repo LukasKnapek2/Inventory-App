@@ -79,6 +79,14 @@ img {
   background-color: #388020ce;
 }
 
+.navbar-logout {
+  background-color: #df3a55ab;
+}
+
+.navbar-logout:hover {
+  background-color: #ff808cbd;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -428,4 +436,103 @@ body {
   cursor: not-allowed;
   opacity: 0.5;
   border-color: #555;
+}
+
+/* 🔐 AUTH PAGES */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 8rem);
+  padding: 2rem;
+}
+
+.auth-card {
+  background-color: var(--primary-color);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(32, 162, 255, 0.2);
+}
+
+.auth-card h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: var(--text-color);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form input {
+  padding: 12px 15px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.auth-form input:focus {
+  outline: solid 2px var(--primary-hover-color);
+  border-color: var(--border-color-hover);
+  box-shadow: 0 0 12px rgba(32, 162, 255, 0.5);
+}
+
+.auth-form input::placeholder {
+  color: rgba(207, 210, 216, 0.6);
+}
+
+.auth-button {
+  padding: 12px 24px;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  border: none;
+  background: linear-gradient(45deg, #20a2ff, #3f6788);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(32, 162, 255, 0.5);
+}
+
+.auth-button:active {
+  transform: translateY(0);
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.auth-link a {
+  color: var(--border-color-hover);
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+.auth-link a:hover {
+  color: #20a2ff;
+  text-decoration: underline;
 }
