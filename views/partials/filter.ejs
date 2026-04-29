@@ -45,14 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const selects = form.querySelectorAll('select');
   const pageType = '<%= pageType %>';
 
-  // Set correct heading on page load
-  const title = document.querySelector('.heading-over-filter');
-  if (pageType === 'inventory') {
-    title.textContent = 'Your Inventory';
-  } else {
-    title.textContent = 'All Skins';
-  }
-
   // Debounce function for search input
   let debounceTimer;
   function debounce(func, delay) {

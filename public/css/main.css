@@ -78,6 +78,9 @@ img {
 .navbar-login {
   background-color: #388020ce;
 }
+.navbar-login svg {
+  stroke: white;
+}
 
 .navbar-logout {
   background-color: #df3a55ab;
@@ -536,3 +539,10 @@ body {
   color: #20a2ff;
   text-decoration: underline;
 }
+
+.navbar-item svg {
+  vertical-align: -0.125em; /* slight downward offset */
+  margin-right: 0.3em; /* space between icon and text */
+  display: inline;
+}
+

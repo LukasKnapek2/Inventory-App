@@ -26,7 +26,7 @@ async function getUserSkins(req, res) {
       });
 
    } else {
-      res.render("skins", {
+      res.render("inventory", {
         skins: userSkins,
         query: req.query,
         currentPage: parseInt(req.query.page) || 1,
