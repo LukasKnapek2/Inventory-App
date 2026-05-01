@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="skin-card">
           <img src="${skin.image_url}" />
           <h3>${skin.name}</h3>
-          <p>${skin.rarity}</p>
+          <p class="rarity-${skin.rarity}">${skin.rarity}</p>
           <p>Price: $${skin.price}</p>
           ${data.pageType === 'inventory' ? `<p>Qty: ${skin.quantity}</p>` : ''}
         </div>

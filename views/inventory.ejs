@@ -26,14 +26,14 @@
   <% }) %>
 </div>
 
-<div id="gift-modal" style="display:none;">
-  <h2>Gift Skin</h2>
+<div id="gift-modal" class="hidden">
   <form id="gift-form">
+    <h2>Gift Skin</h2>
     <input type="hidden" name="skin_id" id="gift-skin-id" />
-    <label for="recipient-name">Recipient Username:</label>
-    <input type="text" name="recipient" id="recipient" required />
+    <label for="recipient">Recipient Username:</label>
+    <input type="text" name="recipient" id="recipient" placeholder="Enter username" required />
     <label for="quantity">Quantity:</label>
-    <input type="number" name="quantity" id="quantity" value="1" required />
+    <input type="number" name="quantity" id="quantity" value="1" min="1" required />
     <button id="confirm-gift" type="submit">Send Gift</button>
     <button type="button" id="cancel-gift">Cancel</button>
   </form>
@@ -43,12 +43,12 @@
     button.addEventListener('click', () => {
       const skinId = button.getAttribute('data-skin-id');
       document.getElementById('gift-skin-id').value = skinId;
-      document.getElementById('gift-modal').style.display = 'block';
+      document.getElementById('gift-modal').classList.remove('hidden');
     });
   });
 
   document.getElementById('cancel-gift').addEventListener('click', () => {
-    document.getElementById('gift-modal').style.display = 'none';
+    document.getElementById('gift-modal').classList.add('hidden');
   });
 
   document.getElementById('gift-form').addEventListener('submit', async (e) => {
@@ -77,6 +77,5 @@
 
 <%- include("partials/pagination", { currentPage, totalPages, query }) %>
 
-<a href="/case">🎁 Open Case</a>
 </body>
 </html>
