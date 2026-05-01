@@ -146,7 +146,7 @@
       <h2>You got:</h2>
       <img src="${winningSkin.image_url}" />
       <h3>${winningSkin.name}</h3>
-      <p>${winningSkin.rarity}</p>
+      <p class="rarity-${winningSkin.rarity}">${winningSkin.rarity}</p>
     `;
           document.querySelector(".case-container").appendChild(resultDiv);
           setTimeout(() => {
