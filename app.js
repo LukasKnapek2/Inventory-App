@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const port = 3001;
+const PORT = process.env.PORT || 3001;
 const allSkinsRouter = require("./routes/allSkinsRouter");
 const authRoutes = require("./routes/authRoutes");
 const inventoryRoutes = require("./routes/inventoryRoutes");
@@ -37,10 +37,10 @@ app.use("/case", requireAuth, caseRoutes);
 
 
 
-app.listen(port, (error) => {
+app.listen(PORT, (error) => {
   if (error) {
     console.error(`Error occurred while starting the server: ${error}`);
   } else {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${PORT}`);
   }
 });

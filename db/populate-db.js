@@ -106,10 +106,11 @@ CREATE TABLE IF NOT EXISTS inventories (
 `;
 
 async function populateDB() {
-  const connectionString =
+  const connectionString = process.env.DATABASE_URL ||
     process.argv[2] ||
     `postgresql://${process.env.POSTGRESQL_USER}:${process.env.POSTGRESQL_PASSWORD}@localhost:5432/${process.env.POSTGRESQL_DB}`;
-  const dbClient = new Client({
+
+    const dbClient = new Client({
     connectionString: connectionString,
   });
   await dbClient.connect();
