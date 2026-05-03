@@ -9,6 +9,7 @@ const pool = new Pool({
   database: process.env.DATABASE_URL ? undefined : process.env.POSTGRESQL_DB,
   password: process.env.DATABASE_URL ? undefined : process.env.POSTGRESQL_PASSWORD,
   port: process.env.DATABASE_URL ? undefined : process.env.POSTGRESQL_PORT,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
 module.exports = pool;
