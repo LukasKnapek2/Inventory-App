@@ -37,12 +37,14 @@ async function login(req, res) {
     return res.send("Wrong password");
   }
 
-  req.session.user = {
-    id: user.id,
-    username: user.username,
-  };
+req.session.user = {
+  id: user.id,
+  username: user.username,
+};
 
+req.session.save(() => {
   res.redirect("/inventory");
+});
 }
 
 function logout(req, res) {
