@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const pool = require("./db/pool");
 const app = express();
 const PORT = process.env.PORT || 3001;
 const allSkinsRouter = require("./routes/allSkinsRouter");
@@ -8,6 +9,7 @@ const inventoryRoutes = require("./routes/inventoryRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const path = require("path");
 const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
 const { requireAuth } = require("./middleware/requireAuth");
 
 app.set("views", path.join(__dirname, "views"));
@@ -20,9 +22,22 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "defaultsecret",
+    store: new pgSession({
+      pool: pool,
+      tableName: "user_sessions",
+    }),
+
+    secret: process.env.SESSION_SECRET,
+
     resave: false,
     saveUninitialized: false,
+
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   }),
 );
 app.use((req, res, next) => {
