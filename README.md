@@ -2,6 +2,8 @@
 
 A full-stack web application for managing a gaming inventory with user authentication, skin management, and case opening features. Built with Node.js, Express, and PostgreSQL.
 
+Live-Demo https://inventory-app-tzx4.onrender.com
+
 ## Features
 
 - **User Authentication**: Secure registration and login with password hashing (bcrypt)
